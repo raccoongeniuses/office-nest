@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import hbs from 'hbs';
 
 import { ValidationPipe } from '@nestjs/common';
+import { AuthExceptionFilter } from './filters/auth-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -14,9 +15,19 @@ async function bootstrap() {
   hbs.registerHelper('eq', (a, b) => a === b);
   hbs.registerHelper('inc', (value) => parseInt(value) + 1);
   hbs.registerHelper('json', (context) => JSON.stringify(context));
+  hbs.registerHelper('formatCurrency', (value) => {
+    if (typeof value === 'undefined' || value === null) return '0,00';
+    const num = Number(value);
+    if (isNaN(num)) return value;
+    return num.toLocaleString('id-ID', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  });
 
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalFilters(new AuthExceptionFilter());
 
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.useStaticAssets(join(process.cwd(), 'public'));

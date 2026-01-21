@@ -10,86 +10,86 @@
 
 <body
     class="bg-stone-50 dark:bg-nest-900 min-h-screen font-mono text-stone-900 dark:text-vibe-100 transition-colors duration-300">
-    <nav class="bg-white dark:bg-nest-800 border-b-2 border-stone-800 dark:border-stone-700 p-4 mb-6 transition-colors duration-300">
+    <nav class="bg-white dark:bg-nest-800 border-b-2 border-stone-800 dark:border-stone-700 p-3 mb-4 transition-colors duration-300">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold uppercase tracking-wide dark:text-vibe-500">Office Nest</h1>
-            <div class="flex items-center gap-4">
-                <span class="text-sm font-bold dark:text-vibe-200">{{user.email}}</span>
-                <a href="/auth/logout" class="text-sm text-red-600 font-bold hover:underline">Logout</a>
+            <h1 class="text-lg font-bold uppercase tracking-wider dark:text-vibe-500">Office Nest</h1>
+            <div class="flex items-center gap-3">
+                <span class="text-xs font-bold dark:text-vibe-200 uppercase tracking-wide">{{user.email}}</span>
+                <a href="/auth/logout" class="text-xs text-red-600 font-bold hover:underline uppercase tracking-wide">Logout</a>
             </div>
         </div>
     </nav>
 
-    <main class="container mx-auto px-4">
+    <main class="container mx-auto px-3 max-w-4xl">
         <!-- Gamification Stats -->
-        <div class="col-span-1 md:col-span-2 bg-white dark:bg-nest-800 p-4 border-2 border-stone-800 dark:border-stone-700 rounded-sm shadow-[4px_4px_0px_0px_rgba(41,37,36,1)] mb-6">
-            <div class="flex justify-between items-start mb-4">
+        <div class="col-span-1 md:col-span-2 bg-white dark:bg-nest-800 p-3 border-2 border-stone-800 dark:border-stone-700 rounded-sm shadow-[4px_4px_0px_0px_rgba(41,37,36,1)] mb-4">
+            <div class="flex justify-between items-start mb-3">
                 <div>
-                    <h2 class="text-2xl font-bold uppercase dark:text-vibe-yellow">Level {{user.level}}</h2>
-                    <p class="text-stone-600 dark:text-vibe-300">XP: {{user.xp}} / {{nextLevelXp}}</p>
+                    <h2 class="text-xl font-bold uppercase dark:text-vibe-yellow tracking-wide">Level {{user.level}}</h2>
+                    <p class="text-xs text-stone-600 dark:text-vibe-300 font-bold mt-1">XP: {{user.xp}} / {{nextLevelXp}}</p>
                 </div>
                 <div class="text-right">
-                    <div class="text-sm font-bold text-stone-500 dark:text-vibe-400">Streak</div>
-                    <div class="text-2xl font-bold dark:text-vibe-orange">{{user.currentStreak}} Days 🔥</div>
+                    <div class="text-xs font-bold text-stone-500 dark:text-vibe-400 uppercase tracking-wide">Streak</div>
+                    <div class="text-xl font-bold dark:text-vibe-orange">{{user.currentStreak}} Days 🔥</div>
                 </div>
             </div>
             
             <!-- Progress Bar -->
-            <div class="w-full bg-stone-200 dark:bg-stone-700 h-4 border-2 border-stone-800 dark:border-stone-600 rounded-full overflow-hidden">
+            <div class="w-full bg-stone-200 dark:bg-stone-700 h-3 border-2 border-stone-800 dark:border-stone-600 rounded-full overflow-hidden">
                 <div class="bg-indigo-600 dark:bg-vibe-purple h-full" style="width: {{xpProgress}}%"></div>
             </div>
 
             <!-- Badges -->
-            <div class="mt-4 flex gap-2 flex-wrap items-center">
+            <div class="mt-3 flex gap-2 flex-wrap items-center">
                 {{#each user.badges}}
-                    <span class="inline-flex items-center px-2 py-1 rounded-sm border border-stone-800 bg-yellow-200 text-xs font-bold" title="{{this.badge.description}}">
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm border border-stone-800 bg-yellow-200 text-xs font-bold uppercase tracking-tight" title="{{this.badge.description}}">
                         {{this.badge.name}}
                     </span>
                 {{/each}}
-                <a href="/attendance/leaderboard" class="ml-auto text-xs font-bold text-indigo-600 dark:text-vibe-cyan hover:underline">View Leaderboard -></a>
+                <a href="/attendance/leaderboard" class="ml-auto text-xs font-bold text-indigo-600 dark:text-vibe-cyan hover:underline uppercase tracking-wide">Leaderboard -></a>
             </div>
 
             <!-- Attendance Actions -->
-            <div class="mt-6 flex gap-4">
+            <div class="mt-4 flex gap-3 border-t-2 border-stone-200 dark:border-stone-700 pt-3">
                 {{#if isCheckedIn}}
                     {{#if isCheckedOut}}
-                        <button disabled class="bg-stone-300 text-stone-600 px-6 py-2 font-bold border-2 border-stone-500 cursor-not-allowed">
+                        <button disabled class="w-full bg-stone-300 text-stone-600 px-4 py-1.5 font-bold border-2 border-stone-500 cursor-not-allowed text-sm uppercase tracking-wide">
                             Day Complete
                         </button>
                     {{else}}
-                        <button onclick="checkOut()" class="bg-yellow-400 text-stone-900 px-6 py-2 font-bold border-2 border-stone-800 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all">
+                        <button onclick="checkOut()" class="w-full bg-yellow-400 text-stone-900 px-4 py-1.5 font-bold border-2 border-stone-800 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-sm uppercase tracking-wide">
                             Check Out
                         </button>
                     {{/if}}
                 {{else}}
-                    <button onclick="checkIn()" class="bg-green-500 text-stone-900 px-6 py-2 font-bold border-2 border-stone-800 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all">
+                    <button onclick="checkIn()" class="w-full bg-green-500 text-stone-900 px-4 py-1.5 font-bold border-2 border-stone-800 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-sm uppercase tracking-wide">
                         Check In
                     </button>
                 {{/if}}
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
             <!-- Leave Management Card -->
             <a href="/leave"
-                class="block bg-white dark:bg-nest-800 p-4 border-2 border-stone-800 dark:border-stone-700 rounded-sm shadow-[4px_4px_0px_0px_rgba(41,37,36,1)] dark:shadow-[4px_4px_0px_0px_rgba(28,25,23,1)] hover:animate-shake hover:shadow-[6px_6px_0px_0px_rgba(41,37,36,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(28,25,23,1)] transition-all group">
-                <div class="flex items-center gap-3 mb-4">
+                class="block bg-white dark:bg-nest-800 p-3 border-2 border-stone-800 dark:border-stone-700 rounded-sm shadow-[4px_4px_0px_0px_rgba(41,37,36,1)] dark:shadow-[4px_4px_0px_0px_rgba(28,25,23,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(41,37,36,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(28,25,23,1)] transition-all group">
+                <div class="flex items-center gap-2 mb-2">
                     <i data-lucide="calendar"
-                        class="w-6 h-6 text-indigo-600 dark:text-vibe-cyan group-hover:scale-110 transition-transform"></i>
-                    <h2 class="text-xl font-bold uppercase dark:text-vibe-cyan">Leave Management</h2>
+                        class="w-5 h-5 text-indigo-600 dark:text-vibe-cyan group-hover:scale-110 transition-transform"></i>
+                    <h2 class="text-lg font-bold uppercase dark:text-vibe-cyan tracking-wide">Leave</h2>
                 </div>
-                <p class="mb-0 text-stone-600 dark:text-vibe-300">View your leave balance and submit new requests.</p>
+                <p class="mb-0 text-xs text-stone-600 dark:text-vibe-300 font-medium">Balance & Requests</p>
             </a>
 
             <!-- Reimbursement Card -->
             <a href="/reimbursement"
-                class="block bg-white dark:bg-nest-800 p-4 border-2 border-stone-800 dark:border-stone-700 rounded-sm shadow-[4px_4px_0px_0px_rgba(41,37,36,1)] dark:shadow-[4px_4px_0px_0px_rgba(28,25,23,1)] hover:animate-shake hover:shadow-[6px_6px_0px_0px_rgba(41,37,36,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(28,25,23,1)] transition-all group">
-                <div class="flex items-center gap-3 mb-4">
+                class="block bg-white dark:bg-nest-800 p-3 border-2 border-stone-800 dark:border-stone-700 rounded-sm shadow-[4px_4px_0px_0px_rgba(41,37,36,1)] dark:shadow-[4px_4px_0px_0px_rgba(28,25,23,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(41,37,36,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(28,25,23,1)] transition-all group">
+                <div class="flex items-center gap-2 mb-2">
                     <i data-lucide="receipt"
-                        class="w-6 h-6 text-indigo-600 dark:text-vibe-pink group-hover:scale-110 transition-transform"></i>
-                    <h2 class="text-xl font-bold uppercase dark:text-vibe-pink">Reimbursements</h2>
+                        class="w-5 h-5 text-indigo-600 dark:text-vibe-pink group-hover:scale-110 transition-transform"></i>
+                    <h2 class="text-lg font-bold uppercase dark:text-vibe-pink tracking-wide">Reimbursements</h2>
                 </div>
-                <p class="mb-0 text-stone-600 dark:text-vibe-300">Submit expense claims and track approval status.</p>
+                <p class="mb-0 text-xs text-stone-600 dark:text-vibe-300 font-medium">Claims & Status</p>
             </a>
         </div>
     </main>
@@ -101,6 +101,8 @@
                 const res = await fetch('/attendance/check-in', { method: 'POST' });
                 if (res.ok) {
                     window.location.reload();
+                } else if (res.status === 401) {
+                    window.location.href = '/auth/login';
                 } else {
                     const data = await res.json();
                     alert(data.message || 'Error checking in');
@@ -115,6 +117,8 @@
                 const res = await fetch('/attendance/check-out', { method: 'POST' });
                 if (res.ok) {
                     window.location.reload();
+                } else if (res.status === 401) {
+                    window.location.href = '/auth/login';
                 } else {
                     const data = await res.json();
                     alert(data.message || 'Error checking out');
