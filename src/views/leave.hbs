@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html class="light">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Leave Management - Office Nest</title>
+    <link href="/css/styles.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body
+    class="bg-stone-50 dark:bg-nest-900 min-h-screen font-mono text-stone-900 dark:text-vibe-100 transition-colors duration-300">
+    <nav class="bg-white dark:bg-nest-800 border-b-2 border-stone-800 dark:border-stone-700 p-4 mb-8 transition-colors duration-300">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold uppercase tracking-wide dark:text-vibe-500"><a href="/dashboard">Office
+                    Nest</a></h1>
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-bold dark:text-vibe-200">{{user.email}}</span>
+                <a href="/auth/logout" class="text-sm text-red-600 font-bold hover:underline">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl font-bold uppercase text-stone-900 dark:text-vibe-100">My Leave Requests</h1>
+            <button onclick="document.getElementById('new-leave-modal').showModal()"
+                class="px-4 py-2 font-bold bg-indigo-600 text-white border-2 border-stone-800 dark:border-stone-700 rounded-sm shadow-[2px_2px_0px_0px_rgba(28,25,23,1)] dark:shadow-[2px_2px_0px_0px_rgba(28,25,23,1)] hover:bg-indigo-700 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">New
+                Request</button>
+        </div>
+
+        <div
+            class="bg-white dark:bg-nest-800 border-2 border-stone-800 dark:border-stone-700 rounded-sm shadow-[4px_4px_0px_0px_rgba(28,25,23,1)] dark:shadow-[4px_4px_0px_0px_rgba(28,25,23,1)] overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-stone-100 dark:bg-nest-900 border-b-2 border-stone-800 dark:border-stone-700">
+                    <tr>
+                        <th class="p-4 font-bold uppercase text-sm text-stone-900 dark:text-vibe-300">Type</th>
+                        <th class="p-4 font-bold uppercase text-sm text-stone-900 dark:text-vibe-300">Start Date</th>
+                        <th class="p-4 font-bold uppercase text-sm text-stone-900 dark:text-vibe-300">End Date</th>
+                        <th class="p-4 font-bold uppercase text-sm text-stone-900 dark:text-vibe-300">Reason</th>
+                        <th class="p-4 font-bold uppercase text-sm text-stone-900 dark:text-vibe-300">Attachment</th>
+                        <th class="p-4 font-bold uppercase text-sm text-stone-900 dark:text-vibe-300">Status</th>
+                        <th class="p-4 font-bold uppercase text-sm text-right text-stone-900 dark:text-vibe-300">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-stone-200 dark:divide-stone-700">
+                    {{#each leaves}}
+                    <tr class="hover:bg-stone-50 dark:hover:bg-nest-700 transition-colors">
+                        <td class="p-4 font-medium text-stone-900 dark:text-stone-200">{{this.type}}</td>
+                        <td class="p-4 text-stone-900 dark:text-stone-300">{{this.startDate}}</td>
+                        <td class="p-4 text-stone-900 dark:text-stone-300">{{this.endDate}}</td>
+                        <td class="p-4 text-stone-900 dark:text-stone-300">{{this.reason}}</td>
+                        <td class="p-4 text-stone-900 dark:text-stone-300">
+                            {{#if this.attachmentUrl}}
+                                <a href="{{this.attachmentUrl}}" target="_blank" class="block shrink-0 group relative w-24 h-24">
+                                    <img src="{{this.attachmentUrl}}" alt="Attachment" class="w-full h-full object-cover rounded-sm border border-stone-300 dark:border-stone-600 group-hover:scale-150 transition-transform origin-center z-10 relative bg-white dark:bg-stone-800" />
+                                    <span class="sr-only">View Attachment</span>
+                                </a>
+                            {{else}}
+                                <span class="text-stone-400 dark:text-stone-600">-</span>
+                            {{/if}}
+                        </td>
+                        <td class="p-4">
+                            <span
+                                class="px-2 py-1 text-xs font-bold uppercase border border-stone-800 dark:border-stone-600 rounded-sm 
+                                {{#if (eq this.status 'APPROVED')}}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100{{/if}}
+                                {{#if (eq this.status 'PENDING')}}bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100{{/if}}
+                                {{#if (eq this.status 'REJECTED')}}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100{{/if}}">
+                                {{this.status}}
+                            </span>
+                        </td>
+                        <td class="p-4 text-right">
+                            {{#if (eq this.status 'PENDING')}}
+                                <div class="flex justify-end gap-2">
+                                    <button onclick="editLeave({{json this}})" class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-200"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                                    <button onclick="deleteLeave({{this.id}})" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </div>
+                            {{/if}}
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <dialog id="new-leave-modal"
+        class="m-auto p-0 border-2 border-stone-800 dark:border-stone-600 rounded-sm shadow-[8px_8px_0px_0px_rgba(28,25,23,1)] dark:shadow-[8px_8px_0px_0px_rgba(28,25,23,1)] w-full max-w-md backdrop:bg-stone-900/50">
+        <div class="bg-white dark:bg-nest-800 p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold uppercase dark:text-vibe-100">New Request</h2>
+                <button onclick="document.getElementById('new-leave-modal').close()"
+                    class="text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200"><i
+                        data-lucide="x"></i></button>
+            </div>
+            <form action="/leave" method="POST" enctype="multipart/form-data" class="space-y-4" id="new-leave-form">
+                <div>
+                    <label class="block text-sm font-bold uppercase mb-2 text-stone-900 dark:text-stone-300">Type</label>
+                    <select name="type" id="new-leave-type" onchange="toggleAttachment('new')"
+                        class="w-full p-2 border-2 border-stone-800 dark:border-stone-600 dark:bg-nest-900 dark:text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                        <option value="ANNUAL">Annual Leave</option>
+                        <option value="SICK">Sick Leave</option>
+                        <option value="UNPAID">Unpaid Leave</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold uppercase mb-2 text-stone-900 dark:text-stone-300">Start Date</label>
+                        <input type="date" name="startDate" required
+                            class="w-full p-2 border-2 border-stone-800 dark:border-stone-600 dark:bg-nest-900 dark:text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold uppercase mb-2 text-stone-900 dark:text-stone-300">End Date</label>
+                        <input type="date" name="endDate" required
+                            class="w-full p-2 border-2 border-stone-800 dark:border-stone-600 dark:bg-nest-900 dark:text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold uppercase mb-2 text-stone-900 dark:text-stone-300">Reason</label>
+                    <textarea name="reason" rows="3" required
+                        class="w-full p-2 border-2 border-stone-800 dark:border-stone-600 dark:bg-nest-900 dark:text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600"></textarea>
+                </div>
+                <div id="new-attachment-container" class="hidden">
+                    <label class="block text-sm font-bold uppercase mb-2 text-stone-900 dark:text-stone-300">Doctor's Note (Required)</label>
+                    <input type="file" name="file" id="new-attachment-input"
+                        class="w-full p-2 border-2 border-stone-800 dark:border-stone-600 dark:bg-nest-900 dark:text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                </div>
+                <div class="flex justify-end pt-4">
+                    <button type="submit"
+                        class="px-4 py-2 font-bold bg-indigo-600 text-white border-2 border-stone-800 dark:border-stone-600 rounded-sm shadow-[2px_2px_0px_0px_rgba(28,25,23,1)] dark:shadow-[2px_2px_0px_0px_rgba(28,25,23,1)] hover:bg-indigo-700 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">Submit
+                        Request</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <dialog id="edit-leave-modal"
+        class="m-auto p-0 border-2 border-stone-800 dark:border-stone-600 rounded-sm shadow-[8px_8px_0px_0px_rgba(28,25,23,1)] dark:shadow-[8px_8px_0px_0px_rgba(28,25,23,1)] w-full max-w-md backdrop:bg-stone-900/50">
+        <div class="bg-white dark:bg-nest-800 p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold uppercase dark:text-vibe-100">Edit Request</h2>
+                <button onclick="document.getElementById('edit-leave-modal').close()"
+                    class="text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200"><i
+                        data-lucide="x"></i></button>
+            </div>
+            <form id="edit-leave-form" class="space-y-4" enctype="multipart/form-data">
+                <input type="hidden" name="id" id="edit-id">
+                <div>
+                    <label class="block text-sm font-bold uppercase mb-2 text-stone-900 dark:text-stone-300">Type</label>
+                    <select name="type" id="edit-type" onchange="toggleAttachment('edit')"
+                        class="w-full p-2 border-2 border-stone-800 dark:border-stone-600 dark:bg-nest-900 dark:text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                        <option value="ANNUAL">Annual Leave</option>
+                        <option value="SICK">Sick Leave</option>
+                        <option value="UNPAID">Unpaid Leave</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold uppercase mb-2 text-stone-900 dark:text-stone-300">Start Date</label>
+                        <input type="date" name="startDate" id="edit-startDate" required
+                            class="w-full p-2 border-2 border-stone-800 dark:border-stone-600 dark:bg-nest-900 dark:text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold uppercase mb-2 text-stone-900 dark:text-stone-300">End Date</label>
+                        <input type="date" name="endDate" id="edit-endDate" required
+                            class="w-full p-2 border-2 border-stone-800 dark:border-stone-600 dark:bg-nest-900 dark:text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold uppercase mb-2 text-stone-900 dark:text-stone-300">Reason</label>
+                    <textarea name="reason" id="edit-reason" rows="3" required
+                        class="w-full p-2 border-2 border-stone-800 dark:border-stone-600 dark:bg-nest-900 dark:text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600"></textarea>
+                </div>
+                <div id="edit-attachment-container" class="hidden">
+                     <label class="block text-sm font-bold uppercase mb-2 text-stone-900 dark:text-stone-300">Doctor's Note (Optional if unchanged)</label>
+                     <input type="file" name="file" id="edit-attachment-input"
+                        class="w-full p-2 border-2 border-stone-800 dark:border-stone-600 dark:bg-nest-900 dark:text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                </div>
+                <div class="flex justify-end pt-4">
+                    <button type="submit"
+                        class="px-4 py-2 font-bold bg-indigo-600 text-white border-2 border-stone-800 dark:border-stone-600 rounded-sm shadow-[2px_2px_0px_0px_rgba(28,25,23,1)] dark:shadow-[2px_2px_0px_0px_rgba(28,25,23,1)] hover:bg-indigo-700 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <script>
+        lucide.createIcons();
+
+        function toggleAttachment(prefix) {
+            // Fix: correctly select element by ID. The previous logic had a bug with the || operator inside getElementById
+            // If prefix is 'new', ID is 'new-leave-type'. If prefix is 'edit', ID is 'edit-type'
+            const typeSelect = document.getElementById(prefix === 'new' ? 'new-leave-type' : 'edit-type');
+            if (!typeSelect) return;
+            
+            const type = typeSelect.value;
+            const container = document.getElementById(`${prefix}-attachment-container`);
+            const input = document.getElementById(`${prefix}-attachment-input`);
+            
+            if (type === 'SICK') {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+                input.value = ''; // clear file
+            }
+        }
+
+        function editLeave(leave) {
+            document.getElementById('edit-id').value = leave.id;
+            document.getElementById('edit-type').value = leave.type;
+            document.getElementById('edit-startDate').value = leave.startDate.split('T')[0];
+            document.getElementById('edit-endDate').value = leave.endDate.split('T')[0];
+            document.getElementById('edit-reason').value = leave.reason;
+            
+            toggleAttachment('edit'); // update visibility
+            
+            document.getElementById('edit-leave-modal').showModal();
+        }
+
+        document.getElementById('edit-leave-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-id').value;
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch(`/leave/${id}`, {
+                    method: 'PATCH',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Failed to update leave request');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error updating request');
+            }
+        });
+
+        async function deleteLeave(id) {
+            if (!confirm('Are you sure you want to delete this leave request?')) return;
+            
+            try {
+                const response = await fetch(`/leave/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Failed to delete leave request');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error deleting request');
+            }
+        }
+        
+        // Add listener for New form to valid sick leave attachment
+         document.getElementById('new-leave-form').addEventListener('submit', function(e) {
+             const type = document.getElementById('new-leave-type').value;
+             const fileInput = document.getElementById('new-attachment-input');
+             if (type === 'SICK' && fileInput.files.length === 0) {
+                 e.preventDefault();
+                 alert('Doctor\'s note is required for sick leave.');
+             }
+         });
+    </script>
+</body>
+
+</html>

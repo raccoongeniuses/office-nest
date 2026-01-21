@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html class="light">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Login - Office Nest</title>
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+
+<body
+    class="bg-stone-50 dark:bg-nest-900 min-h-screen flex flex-col items-center justify-center font-mono text-stone-900 dark:text-vibe-100 transition-colors duration-300">
+
+
+    <div
+        class="bg-white dark:bg-nest-800 p-8 w-full max-w-md border-2 border-stone-800 dark:border-stone-700 rounded-sm shadow-[4px_4px_0px_0px_rgba(28,25,23,1)]">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold uppercase tracking-wide text-stone-900 dark:text-vibe-500">Office Nest</h1>
+            <p class="text-stone-500 dark:text-stone-400 mt-2 text-sm">Internal HR System</p>
+        </div>
+
+        <form action="/auth/login" method="POST" class="space-y-6">
+            <div>
+                <label for="email"
+                    class="block text-xs uppercase tracking-wider font-bold mb-2 text-stone-900 dark:text-vibe-300">Email
+                    Address</label>
+                <input type="email" id="email" name="email" required
+                    class="w-full p-3 border-2 border-stone-800 dark:border-stone-600 bg-white dark:bg-nest-900 text-stone-900 dark:text-vibe-100 rounded-sm focus:outline-none focus:border-indigo-600 dark:focus:border-stone-500 transition-colors">
+            </div>
+
+            <div>
+                <label for="password"
+                    class="block text-xs uppercase tracking-wider font-bold mb-2 text-stone-900 dark:text-vibe-300">Password</label>
+                <input type="password" id="password" name="password" required
+                    class="w-full p-3 border-2 border-stone-800 dark:border-stone-600 bg-white dark:bg-nest-900 text-stone-900 dark:text-vibe-100 rounded-sm focus:outline-none focus:border-indigo-600 dark:focus:border-stone-500 transition-colors">
+            </div>
+
+            <button type="submit"
+                class="w-full py-3 font-bold bg-indigo-600 text-white border-2 border-stone-800 dark:border-stone-600 rounded-sm shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-indigo-700 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
+                Sign In
+            </button>
+
+            <p class="text-xs text-center text-stone-400 dark:text-stone-500 mt-4">
+                Contact HR if you don't have an account.
+            </p>
+        </form>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html class="light">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Reimbursements - Office Nest</title>
+    <link href="/css/styles.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body
+    class="bg-stone-50 dark:bg-nest-900 min-h-screen font-mono text-stone-900 dark:text-vibe-100 transition-colors duration-300">
+    <nav class="bg-white dark:bg-nest-800 border-b-2 border-stone-800 dark:border-stone-700 p-4 mb-8 transition-colors duration-300">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold uppercase tracking-wide dark:text-vibe-500"><a href="/dashboard">Office
+                    Nest</a></h1>
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-bold dark:text-vibe-200">{{user.email}}</span>
+                <a href="/auth/logout" class="text-sm text-red-600 font-bold hover:underline">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl font-bold uppercase text-stone-900 dark:text-vibe-100">My Reimbursements</h1>
+            <button onclick="document.getElementById('new-reimbursement-modal').showModal()"
+                class="px-4 py-2 font-bold bg-indigo-600 text-white border-2 border-stone-800 dark:border-stone-700 rounded-sm shadow-[2px_2px_0px_0px_rgba(28,25,23,1)] dark:shadow-[2px_2px_0px_0px_rgba(28,25,23,1)] hover:bg-indigo-700 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">New
+                Claim</button>
+        </div>
+
+        <div
+            class="bg-white dark:bg-nest-800 border-2 border-stone-800 dark:border-stone-700 rounded-sm shadow-[4px_4px_0px_0px_rgba(28,25,23,1)] dark:shadow-[4px_4px_0px_0px_rgba(28,25,23,1)] overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-stone-100 dark:bg-nest-900 border-b-2 border-stone-800 dark:border-stone-700">
+                    <tr>
+                        <th class="p-4 font-bold uppercase text-sm text-stone-900 dark:text-vibe-300">Date</th>
+                        <th class="p-4 font-bold uppercase text-sm text-stone-900 dark:text-vibe-300">Category</th>
+                        <th class="p-4 font-bold uppercase text-sm text-stone-900 dark:text-vibe-300">Description</th>
+                        <th class="p-4 font-bold uppercase text-sm text-stone-900 dark:text-vibe-300">Attachment</th>
+                        <th class="p-4 font-bold uppercase text-sm text-right text-stone-900 dark:text-vibe-300">Amount</th>
+                        <th class="p-4 font-bold uppercase text-sm text-stone-900 dark:text-vibe-300">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-stone-200 dark:divide-stone-700">
+                    {{#each reimbursements}}
+                    <tr class="hover:bg-stone-50 dark:hover:bg-nest-700 transition-colors">
+                        <td class="p-4 text-stone-900 dark:text-stone-300">{{this.date}}</td>
+                        <td class="p-4 font-medium text-stone-900 dark:text-stone-200">{{this.category}}</td>
+                        <td class="p-4 text-stone-900 dark:text-stone-300">{{this.description}}</td>
+                        <td class="p-4 text-stone-900 dark:text-stone-300">
+                            {{#if this.attachmentUrl}}
+                                <a href="{{this.attachmentUrl}}" target="_blank" class="block shrink-0 group relative w-24 h-24">
+                                    <img src="{{this.attachmentUrl}}" alt="Attachment" class="w-full h-full object-cover rounded-sm border border-stone-300 dark:border-stone-600 group-hover:scale-150 transition-transform origin-center z-10 relative bg-white dark:bg-stone-800" />
+                                    <span class="sr-only">View Attachment</span>
+                                </a>
+                            {{else}}
+                                <span class="text-stone-400 dark:text-stone-600">-</span>
+                            {{/if}}
+                        </td>
+                        <td class="p-4 text-right font-mono text-stone-900 dark:text-vibe-400">Rp {{this.amount}}</td>
+                        <td class="p-4">
+                            <span
+                                class="px-2 py-1 text-xs font-bold uppercase border border-stone-800 dark:border-stone-600 rounded-sm 
+                                {{#if (eq this.status 'APPROVED')}}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100{{/if}}
+                                {{#if (eq this.status 'PENDING')}}bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100{{/if}}
+                                {{#if (eq this.status 'REJECTED')}}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100{{/if}}">
+                                {{this.status}}
+                            </span>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <dialog id="new-reimbursement-modal"
+        class="m-auto p-0 border-2 border-stone-800 dark:border-stone-600 rounded-sm shadow-[8px_8px_0px_0px_rgba(28,25,23,1)] dark:shadow-[8px_8px_0px_0px_rgba(28,25,23,1)] w-full max-w-md backdrop:bg-stone-900/50">
+        <div class="bg-white dark:bg-nest-800 p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold uppercase dark:text-vibe-100">New Claim</h2>
+                <button onclick="document.getElementById('new-reimbursement-modal').close()"
+                    class="text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200"><i
+                        data-lucide="x"></i></button>
+            </div>
+            <form action="/reimbursement" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold uppercase mb-2 text-stone-900 dark:text-stone-300">Category</label>
+                    <select name="category"
+                        class="w-full p-2 border-2 border-stone-800 dark:border-stone-600 dark:bg-nest-900 dark:text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                        <option value="TRAVEL">Travel</option>
+                        <option value="MEALS">Meals</option>
+                        <option value="EQUIPMENT">Equipment</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold uppercase mb-2 text-stone-900 dark:text-stone-300">Date</label>
+                    <input type="date" name="date" required
+                        class="w-full p-2 border-2 border-stone-800 dark:border-stone-600 dark:bg-nest-900 dark:text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold uppercase mb-2 text-stone-900 dark:text-stone-300">Description</label>
+                    <input type="text" name="description" required
+                        class="w-full p-2 border-2 border-stone-800 dark:border-stone-600 dark:bg-nest-900 dark:text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold uppercase mb-2 text-stone-900 dark:text-stone-300">Attachment</label>
+                    <input type="file" name="file"
+                        class="w-full p-2 border-2 border-stone-800 dark:border-stone-600 dark:bg-nest-900 dark:text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold uppercase mb-2 text-stone-900 dark:text-stone-300">Amount (Rp)</label>
+                    <input type="number" step="0.01" name="amount" required
+                        class="w-full p-2 border-2 border-stone-800 dark:border-stone-600 dark:bg-nest-900 dark:text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                </div>
+                <div class="flex justify-end pt-4">
+                    <button type="submit"
+                        class="px-4 py-2 font-bold bg-indigo-600 text-white border-2 border-stone-800 dark:border-stone-600 rounded-sm shadow-[2px_2px_0px_0px_rgba(28,25,23,1)] dark:shadow-[2px_2px_0px_0px_rgba(28,25,23,1)] hover:bg-indigo-700 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">Submit
+                        Claim</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

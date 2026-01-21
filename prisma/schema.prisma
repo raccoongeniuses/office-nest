@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      String   @default("EMPLOYEE") // EMPLOYEE, MANAGER, ADMIN
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  leaves    LeaveRequest[]
+  reimbursements Reimbursement[]
+
+  // Gamification Fields
+  xp            Int      @default(0)
+  level         Int      @default(0)
+  currentStreak Int      @default(0)
+  attendance    Attendance[]
+  badges        UserBadge[]
+}
+
+model Attendance {
+  id          Int      @id @default(autoincrement())
+  date        DateTime 
+  checkIn     DateTime
+  checkOut    DateTime?
+  status      String   // ON_TIME, LATE
+  xpEarned    Int      @default(0)
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Badge {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String
+  icon        String   
+  users       UserBadge[]
+}
+
+model UserBadge {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  badgeId   Int
+  badge     Badge    @relation(fields: [badgeId], references: [id])
+  earnedAt  DateTime @default(now())
+
+  @@unique([userId, badgeId])
+}
+
+model LeaveRequest {
+  id        Int      @id @default(autoincrement())
+  startDate DateTime
+  endDate   DateTime
+  reason    String
+  type      String   // ANNUAL, SICK, UNPAID, OTHER
+  status    String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  attachmentUrl String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Reimbursement {
+  id            Int      @id @default(autoincrement())
+  amount        Float
+  description   String
+  category      String   // TRAVEL, MEALS, EQUIPMENT, OTHER
+  status        String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  attachmentUrl String?
+  date          DateTime
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
