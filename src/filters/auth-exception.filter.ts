@@ -20,7 +20,7 @@ export class AuthExceptionFilter implements ExceptionFilter {
 
     if (isHtml) {
       // Redirect to login page
-      return response.redirect('/auth/login');
+      return response.redirect('/login');
     }
 
     // For API/AJAX requests, return standard 401
