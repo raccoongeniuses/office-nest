@@ -6,7 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
+    "build": "npm run build:css && nest build",
+    "postinstall": "prisma generate",
     "build:css": "npx @tailwindcss/cli -i ./src/styles.css -o ./src/public/css/styles.css",
     "watch:css": "npx @tailwindcss/cli -i ./src/styles.css -o ./src/public/css/styles.css --watch",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
